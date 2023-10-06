@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Function to activate virtual environment
 activate_virtualenv() {
     if [ "$(uname)" == "Darwin" ]; then
         activate_script="$1/bin/activate"
@@ -15,24 +14,19 @@ activate_virtualenv() {
     source "$activate_script"
 }
 
-# Output function
 output() {
-    echo -e "\e[91m$1\e[0m"  # Use ANSI color codes for red text
+    echo -e "\e[91m$1\e[0m"  
 }
 
-# Check virtual environment
 output "Checking virtual environment"
 foldername=".venv"
 
-# Create virtual environment if it doesn't exist
 if [ ! -d "$foldername" ]; then
     python3 -m venv "$foldername"
 fi
 
-# Activate virtual environment
 activate_virtualenv "$foldername"
 
-# Check operating system
 system_platform=$(uname)
 if [ "$system_platform" == "Linux" ]; then
     activate_command="source $foldername/bin/activate"
@@ -42,14 +36,12 @@ fi
 
 source "$activate_command"
 
-# Install modules
-packageRequirements=('flask' 'flask_cors' 'flask_Alchemy' 'tabulate')
+packageRequirements=('flask' 'flask_cors' 'Flask-SQLAlchemy' 'tabulate')
 
 for package in "${packageRequirements[@]}"; do
     pip install "$package"
 done
 
-# Clear the terminal
 clear
 
 python run.py

