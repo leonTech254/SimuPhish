@@ -27,12 +27,14 @@ def userChoice_funct():
             isExists=checkScripts(platform=platform.lower())
             # print(isExists)
             randPercentage = random.randint(1, 100)
+            sleepTM=0.2
             for i in range(100):
-                time.sleep(0.2)
+                time.sleep(sleepTM)
                 progress += "="
                 print(f"{progress} {i}% \r", end=' ', flush=True)
                 if i==randPercentage:
                     if isExists:
+                        sleepTM=0.01
                         pass
                     else:
                         io.output(info=f"[!] Error finding {platform} script",color=colors.red)

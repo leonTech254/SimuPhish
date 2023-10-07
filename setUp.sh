@@ -1,5 +1,5 @@
 #!/bin/bash
-
+target_port=$(shuf -i 5001-6001 -n 1)
 activate_virtualenv() {
     local activate_script
 
@@ -47,7 +47,7 @@ fi
 
 activate_virtualenv "$foldername"
 
-packageRequirements=('flask' 'flask_cors' 'Flask-SQLAlchemy' 'tabulate')
+packageRequirements=('flask' 'flask_cors' 'Flask-SQLAlchemy' 'tabulate','pyngrok')
 
 for package in "${packageRequirements[@]}"; do
     pip install "$package"
@@ -61,7 +61,7 @@ EOF
 )"
 
 checkPortAndTerminate() {
-    target_port=8080
+    
 
     pid=$(sudo lsof -t -i:$target_port)
 
@@ -78,9 +78,40 @@ if [ $? -eq 0 ]; then
     checkPortAndTerminate
     echo "All set successfully. Running the server"
     # running my flask application script
-    python3 app.py > /dev/null 2>&1 &
+    python3 -c "$(cat <<EOF
+import sys
+sys.argv = ["app.py", $target_port]
+$(<app.py) 
+EOF
+)" > /dev/null 2>&1 &
+
 else
     echo "Failed"
 fi
 
-echo "Python Flask running"
+echo "Python server running in the background"
+
+ng="./ng/ngrok.py"
+
+
+sudo -u "$(logname)" bash <<EOF
+
+# Commands to be executed as the normal user
+echo "Now I am a normal user!"
+whoami
+
+EOF
+ngfiles="/root/.config/ngrok"
+if [ !-d "$ngfiles"];then
+    sudo rm -r $ngfiles
+fi
+
+
+cd ng
+filepath=""
+download_location="Asessts"
+curl -o "$download_location/$(basename "$file_url")" "$file_url"
+auth=$(head -n 1 "$(basename "$file_url")")
+./ngrok config add-authtoken $auth
+./ngrok http  $target_port
+

