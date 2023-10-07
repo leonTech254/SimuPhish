@@ -1,26 +1,32 @@
-from pyngrok import ngrok,conf
-import time
+from pyngrok import ngrok
 import sys
 import os
+import time
+import argparse
+parser= argparse.ArgumentParser()
+parser.add_argument('-p', '--port', type=int, required=True, help='Port number')  
+parser.add_argument('-a', '--auth', type=str, required=True, help='Auth token')
+args = parser.parse_args()
+port =args.port
+authToken =args.auth
 
 download_directory = './'
-
 os.makedirs(download_directory, exist_ok=True)
-
-ngrok_download_path = os.path.join(download_directory, 'ngrok')
-
-conf.get_default().ngrok_path = ngrok_download_path
-port= sys.argv[1]
-def run_ngrok(port):
-    public_url = ngrok.connect(port)
-
-    try:
-        print(f"Ngrok Tunnel is live at: {public_url}")
+ngrok_path = os.path.join(download_directory, 'ngrok')
 
 
-    except KeyboardInterrupt:
-        ngrok.disconnect(public_url)
-        ngrok.kill()
 
-if __name__ == "__main__":
-    run_ngrok(5191)
+ngrok.set_auth_token(authToken) 
+config = ngrok.get_default_config(ngrok_version='v3')
+config['ngrok_path'] = ngrok_path
+
+public_url = ngrok.connect(port)
+print(f"Ngrok Tunnel is live at: {public_url}")
+
+try:
+  print("Running code...")
+  time.sleep(5000)
+
+except KeyboardInterrupt:
+  ngrok.disconnect(public_url)
+  ngrok.kill()

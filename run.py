@@ -2,8 +2,8 @@ import os
 import sys
 from Asessts.assets import banner, SocialMediaMenu, colors, io
 import time
-from app import app
 import random
+
 
 print(banner.banner)
 
@@ -52,6 +52,7 @@ def checkScripts(platform):
     return os.path.isdir(path)
 
 userChoice_funct()
+
 
 
 

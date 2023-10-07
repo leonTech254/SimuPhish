@@ -47,16 +47,21 @@ fi
 
 activate_virtualenv "$foldername"
 
-packageRequirements=('flask' 'flask_cors' 'Flask-SQLAlchemy' 'tabulate','pyngrok')
+packageRequirements=('flask' 'flask_cors' 'Flask-SQLAlchemy' 'tabulate' 'pyngrok')
 
 for package in "${packageRequirements[@]}"; do
     pip install "$package"
 done
 
-clear
+# clear
 
-python3 -c "$(cat <<EOF
-$(<run.py)
+# python3 -c "$(cat <<EOF
+# $(<run.py)
+# EOF
+# )"
+ python3 -c "$(cat <<EOF
+import sys
+$(<run.py) 
 EOF
 )"
 
@@ -83,7 +88,8 @@ import sys
 sys.argv = ["app.py", $target_port]
 $(<app.py) 
 EOF
-)" > /dev/null 2>&1 &
+)" > output.log 2>&1 &
+
 
 else
     echo "Failed"
@@ -101,17 +107,56 @@ echo "Now I am a normal user!"
 whoami
 
 EOF
-ngfiles="/root/.config/ngrok"
-if [ !-d "$ngfiles"];then
-    sudo rm -r $ngfiles
+
+# #####################KILL NGROK SESSIONS#####################
+killNgrokSessions()
+{
+    ngrok_pid=$(ps aux | grep ngrok | grep -v grep | awk '{print $2}')
+
+if [ -z "$ngrok_pid" ]; then
+  echo "Ngrok process not found."
+else
+  kill "$ngrok_pid"
+  echo "Ngrok process (PID: $ngrok_pid) terminated."
 fi
+}
+killNgrokSessions
+
+# ngfiles="/root/.config/ngrok"
+# if [ !-d "$ngfiles"];then
+#     sudo rm -r $ngfiles
+# fi
+
 
 
 cd ng
-filepath=""
-download_location="Asessts"
-curl -o "$download_location/$(basename "$file_url")" "$file_url"
-auth=$(head -n 1 "$(basename "$file_url")")
-./ngrok config add-authtoken $auth
-./ngrok http  $target_port
+file_url="https://github.com/leonTech254/SimuPhish/raw/main/Asessts/auth.txt"
+output_file="auth.txt"
+wget "$file_url" -O "$output_file"
+auth=$(head -n 1 "$output_file")
+./ngrok authtoken $auth
+# ./ngrok http $target_port 
 
+
+
+
+if [ $? -eq 0 ]; then
+  
+  port=$target_port
+  auth=$auth
+
+  python3 ngrok.py -p "$port" -a "$auth"
+  
+  echo "All set successfully. Running the server"
+
+else
+  echo "Error checking port or auth"
+  exit 1
+fi
+
+
+
+
+
+
+echo "hello wordl"

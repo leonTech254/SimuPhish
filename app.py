@@ -3,7 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 from Models.db import db
 from Models.model import LoginCredentials
 import sys
-port=sys.argv[1]
+if len(sys.argv)>1:
+    port=sys.argv[1]
+else:
+    sys.exit(0)
 app=Flask(__name__)
 
 
