@@ -62,7 +62,7 @@ for package in "${packageRequirements[@]}"; do
     pip install "$package"
 done
 
-# clear
+clear
 
 # python3 -c "$(cat <<EOF
 # $(<run.py)
