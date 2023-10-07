@@ -25,9 +25,9 @@ def userChoice_funct():
             io.output(info=f"preparing {platform} scripts........", color=colors.green)
             progress = ""
             isExists=checkScripts(platform=platform.lower())
+            # print(isExists)
             randPercentage = random.randint(1, 100)
             for i in range(100):
-                
                 time.sleep(0.2)
                 progress += "="
                 print(f"{progress} {i}% \r", end=' ', flush=True)
@@ -36,22 +36,21 @@ def userChoice_funct():
                         pass
                     else:
                         io.output(info=f"[!] Error finding {platform} script",color=colors.red)
-                        sys.exit(0)
+                        sys.exit(1)
                 if i == 99:
                     print(f"{progress} {i}% done!!")
-                    # starting flask program
-                    if __name__ == "__main__":
-                        app.run(debug=True)
-
+                    
+                    return True
     except Exception as e:
         print(e)
         sys.exit(0)
 
 def checkScripts(platform):
     path=f"./templates/{platform}"
-    if os.path.isdir(path):
-        print("exist")
-    else:
-        print("does not exist")
+    return os.path.isdir(path)
 
 userChoice_funct()
+
+
+
+
