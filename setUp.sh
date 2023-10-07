@@ -5,6 +5,7 @@ activate_virtualenv() {
 
     case "$(uname)" in
         Darwin|Linux)
+            checkuser
             activate_script="$1/bin/activate"
             ;;
         MINGW32_NT|MINGW64_NT)
@@ -21,6 +22,14 @@ activate_virtualenv() {
 
 output() {
     echo -e "\e[91m$1\e[0m"  
+}
+
+checkuser() {
+    user=$(whoami)
+    if [ "$user" != 'root' ]; then 
+        echo "The script needs to be run as root"
+        exit 1
+    fi
 }
 
 output "Checking if Python is installed"
@@ -51,12 +60,27 @@ $(<run.py)
 EOF
 )"
 
+checkPortAndTerminate() {
+    target_port=8080
+
+    pid=$(sudo lsof -t -i:$target_port)
+
+    if [ -n "$pid" ]; then
+        echo "Process using port $target_port found (PID: $pid). Terminating..."
+        sudo kill -9 $pid
+        echo "Process terminated."
+    else
+        echo "No process found using port $target_port."
+    fi
+}
+
 if [ $? -eq 0 ]; then 
-    echo "All set successfully Runing the server"
-    python3 -c "$(cat <<EOF
-$(<app.py)
-EOF
-)"
+    checkPortAndTerminate
+    echo "All set successfully. Running the server"
+    # running my flask application script
+    python3 app.py > /dev/null 2>&1 &
 else
-    echo "failed"
+    echo "Failed"
 fi
+
+echo "Python Flask running"
